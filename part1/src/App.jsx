@@ -12,40 +12,48 @@ const Content = (props) => {
 
   return (
     <>
-      <Part title={props.content[0].title} count={props.content[0].excercises} />
-      <Part title={props.content[1].title} count={props.content[1].excercises} />
-      <Part title={props.content[2].title} count={props.content[2].excercises} />
+      {
+        props.parts.map(
+          (part, idx) => <Part title={part.name} count={part.exercises} key={idx} />
+        )
+      }
+
     </>
 
   )
 }
 
 const Total = (props) => {
+  const sum = props.parts.reduce(
+    (acc, currVal) => acc + currVal.exercises, 0,
+  )
   return (
-    <p>Number of excercises: {props.count}</p>
+    <p>Number of excercises: {sum}</p>
   )
 }
 
 const App = () => {
   const course = 'Half Stack application development'
-  const part1 = {
-    name: 'Fundamentals of React',
-    exercises: 10
-  }
-  const part2 = {
-    name: 'Using props to pass data',
-    exercises: 7
-  }
-  const part3 = {
-    name: 'State of a component',
-    exercises: 14
-  }
+  const parts = [
+    {
+      name: 'Fundamentals of React',
+      exercises: 10
+    },
+    {
+      name: 'Using props to pass data',
+      exercises: 7
+    },
+    {
+      name: 'State of a component',
+      exercises: 14
+    }
+  ]
 
   return (
     <div>
       <Header name={course} />
-      <Content content={[{ title: part1.name, excercises: part1.exercises }, { title: part2.name, excercises: part2.exercises }, { title: part3.name, excercises: part3.exercises }]} />
-      <Total count={part1.exercises + part2.exercises + part3.exercises} />
+      <Content parts={parts} />
+      <Total parts={parts} />
     </div>
   )
 }
