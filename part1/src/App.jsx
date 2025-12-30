@@ -27,27 +27,11 @@ const App = () => {
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 })
 
-  const findMostVotedAnecdote = () => {
-    let highestVoteCount = 0
-    let highestVoteIndex = 0
-    let foundHigher = 0
+  const highestVoteIndex = Object.keys(votes).reduce((highestIndex, key) => {
+    return votes[highestIndex] > votes[key] ? highestIndex : key
+  }, 0)
 
-    Object.entries(votes).forEach((voteArray) => {
-      console.log("current Array", voteArray);
-
-      if (voteArray[1] > highestVoteCount) {
-        highestVoteCount = voteArray[1]
-        highestVoteIndex = voteArray[0]
-        foundHigher++
-      }
-    })
-
-    const result = foundHigher > 0 ? highestVoteIndex : -1
-    console.log("result", result);
-    return result
-  }
-
-  const mostVotesIndex = findMostVotedAnecdote()
+  const voteCount = Object.values(votes).reduce((sum, voteCount) => sum += voteCount)
 
   const getRandomInt = (max) => {
     return Math.floor(Math.random() * max);
@@ -70,7 +54,7 @@ const App = () => {
       <Anecdote header="Anecdote of the Day" text={anecdotes[selected]} votes={votes[selected]} />
       <button onClick={selectNextRandomAnecdote}>next anecdote</button>
       <button onClick={() => voteCurrentAnecdote(selected)}>vote</button>
-      {mostVotesIndex != -1 ? <Anecdote header="Anecdote with most votes" text={anecdotes[mostVotesIndex]} votes={votes[mostVotesIndex]} /> : ""}
+      {voteCount > 0 ? <Anecdote header="Anecdote with most votes" text={anecdotes[highestVoteIndex]} votes={votes[highestVoteIndex]} /> : ""}
     </div>
   )
 }
