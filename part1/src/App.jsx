@@ -23,15 +23,39 @@ const Statistics = ({ good, neutral, bad }) => {
     <>
       <h1>Statistics</h1>
       {sum > 0 ?
-        <>
-          <div>Good: {good}</div>
-          <div>Neutral: {neutral}</div>
-          <div>Bad: {bad}</div>
-          <hr />
-          <div>All: {sum}</div>
-          <div>Average: {average.toFixed(2)}</div>
-          <div>Positive: {positive.toFixed(2) + "%"}</div>
-        </>
+        <table>
+          <tbody>
+            <tr>
+              <td>Good:</td>
+              <td>{good}</td>
+            </tr>
+
+            <tr>
+              <td>Neutral:</td>
+              <td>{neutral}</td>
+            </tr>
+
+            <tr>
+              <td>Bad:</td>
+              <td>{bad}</td>
+            </tr>
+
+            <tr>
+              <td>All:</td>
+              <td>{sum}</td>
+            </tr>
+
+            <tr>
+              <td>Average: </td>
+              <td>{average.toFixed(2)}</td>
+            </tr>
+
+            <tr>
+              <td>Positive: </td>
+              <td>{positive.toFixed(2) + "%"}</td>
+            </tr>
+          </tbody>
+        </table>
         :
         <p>No Feedback given</p>
       }
