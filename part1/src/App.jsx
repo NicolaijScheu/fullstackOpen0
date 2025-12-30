@@ -1,61 +1,43 @@
-const Header = (props) => {
-  return (
-    <h1>{props.name}</h1>
-  )
-}
+import { useState } from "react"
 
-const Part = (props) => {
-  return <p>{props.title} {props.count}</p>
-}
+const Button = ({ text, onClick }) => <button onClick={onClick}>{text}</button>
 
-const Content = (props) => {
-
+const Feedback = ({ header, setters, values }) => {
   return (
     <>
-      {
-        props.parts.map(
-          (part, idx) => <Part title={part.name} count={part.exercises} key={idx} />
-        )
-      }
-
+      <h1>{header}</h1>
+      <Button text="good" onClick={() => setters[0](values[0] + 1)} />
+      <Button text="neutral" onClick={() => setters[1](values[1] + 1)} />
+      <Button text="bad" onClick={() => setters[2](values[2] + 1)} />
     </>
 
   )
 }
 
-const Total = (props) => {
-  const sum = props.parts.reduce(
-    (acc, currVal) => acc + currVal.exercises, 0,
-  )
+const Statistics = ({ good, neutral, bad }) => {
   return (
-    <p>Number of excercises: {sum}</p>
+    <>
+      <h1>Statistics</h1>
+      <div>Good: {good}</div>
+      <div>Neutral: {neutral}</div>
+      <div>Bad: {bad}</div>
+    </>
+
   )
 }
 
 const App = () => {
-  const course = {
-    name: 'Half Stack application development',
-    parts: [
-      {
-        name: 'Fundamentals of React',
-        exercises: 10
-      },
-      {
-        name: 'Using props to pass data',
-        exercises: 7
-      },
-      {
-        name: 'State of a component',
-        exercises: 14
-      }
-    ]
-  }
+  const [countGood, setCountGood] = useState(0)
+  const [countNeutral, setCountNeutral] = useState(0)
+  const [countBad, setCountBad] = useState(0)
+  const header = "Give Feedback"
+
 
   return (
     <div>
-      <Header name={course.name} />
-      <Content parts={course.parts} />
-      <Total parts={course.parts} />
+      <Feedback header={header} setters={[setCountGood, setCountNeutral, setCountBad]} values={[countGood, countNeutral, countBad]} />
+      <Statistics good={countGood} neutral={countNeutral} bad={countBad} />
+
     </div>
   )
 }
