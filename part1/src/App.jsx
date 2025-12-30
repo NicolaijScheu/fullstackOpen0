@@ -1,82 +1,76 @@
 import { useState } from "react"
 
-const Button = ({ text, onClick }) => <button onClick={onClick}>{text}</button>
-
-const Feedback = ({ header, setters, values }) => {
+const Anecdote = ({ header, text, votes }) => {
   return (
     <>
       <h1>{header}</h1>
-      <Button text="good" onClick={() => setters[0](values[0] + 1)} />
-      <Button text="neutral" onClick={() => setters[1](values[1] + 1)} />
-      <Button text="bad" onClick={() => setters[2](values[2] + 1)} />
+      <div>{text}</div>
+      <div>has {votes} votes</div>
     </>
-
   )
-}
 
-const Statistics = ({ good, neutral, bad }) => {
-  const sum = good + bad + neutral
-  const average = (good * 1 + bad * -1) / sum
-  const positive = good * 100 / sum
 
-  return (
-    <>
-      <h1>Statistics</h1>
-      {sum > 0 ?
-        <table>
-          <tbody>
-            <tr>
-              <td>Good:</td>
-              <td>{good}</td>
-            </tr>
-
-            <tr>
-              <td>Neutral:</td>
-              <td>{neutral}</td>
-            </tr>
-
-            <tr>
-              <td>Bad:</td>
-              <td>{bad}</td>
-            </tr>
-
-            <tr>
-              <td>All:</td>
-              <td>{sum}</td>
-            </tr>
-
-            <tr>
-              <td>Average: </td>
-              <td>{average.toFixed(2)}</td>
-            </tr>
-
-            <tr>
-              <td>Positive: </td>
-              <td>{positive.toFixed(2) + "%"}</td>
-            </tr>
-          </tbody>
-        </table>
-        :
-        <p>No Feedback given</p>
-      }
-
-    </>
-
-  )
 }
 
 const App = () => {
-  const [countGood, setCountGood] = useState(0)
-  const [countNeutral, setCountNeutral] = useState(0)
-  const [countBad, setCountBad] = useState(0)
-  const header = "Give Feedback"
+  const anecdotes = [
+    'If it hurts, do it more often.',
+    'Adding manpower to a late software project makes it later!',
+    'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
+    'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
+    'Premature optimization is the root of all evil.',
+    'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
+    'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
+    'The only way to go fast, is to go well.'
+  ]
 
+  const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 })
+
+  const findMostVotedAnecdote = () => {
+    let highestVoteCount = 0
+    let highestVoteIndex = 0
+    let foundHigher = 0
+
+    Object.entries(votes).forEach((voteArray) => {
+      console.log("current Array", voteArray);
+
+      if (voteArray[1] > highestVoteCount) {
+        highestVoteCount = voteArray[1]
+        highestVoteIndex = voteArray[0]
+        foundHigher++
+      }
+    })
+
+    const result = foundHigher > 0 ? highestVoteIndex : -1
+    console.log("result", result);
+    return result
+  }
+
+  const mostVotesIndex = findMostVotedAnecdote()
+
+  const getRandomInt = (max) => {
+    return Math.floor(Math.random() * max);
+  }
+
+  const selectNextRandomAnecdote = () => {
+    const randomInt = getRandomInt(anecdotes.length)
+    setSelected(randomInt)
+  }
+
+  const voteCurrentAnecdote = (selected) => {
+    const copy = { ...votes }
+    copy[selected] += 1
+
+    setVotes(copy)
+  }
 
   return (
     <div>
-      <Feedback header={header} setters={[setCountGood, setCountNeutral, setCountBad]} values={[countGood, countNeutral, countBad]} />
-      <Statistics good={countGood} neutral={countNeutral} bad={countBad} />
-
+      <Anecdote header="Anecdote of the Day" text={anecdotes[selected]} votes={votes[selected]} />
+      <button onClick={selectNextRandomAnecdote}>next anecdote</button>
+      <button onClick={() => voteCurrentAnecdote(selected)}>vote</button>
+      {mostVotesIndex != -1 ? <Anecdote header="Anecdote with most votes" text={anecdotes[mostVotesIndex]} votes={votes[mostVotesIndex]} /> : ""}
     </div>
   )
 }
