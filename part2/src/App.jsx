@@ -1,59 +1,90 @@
-import Course from "./components/Course"
+import { useState } from 'react'
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
 
 const App = () => {
-  const courses = [
-    {
-      name: 'Half Stack application development',
-      id: 1,
-      parts: [
-        {
-          name: 'Fundamentals of React',
-          exercises: 10,
-          id: 1
-        },
-        {
-          name: 'Using props to pass data',
-          exercises: 7,
-          id: 2
-        },
-        {
-          name: 'State of a component',
-          exercises: 14,
-          id: 3
-        },
-        {
-          name: 'Redux',
-          exercises: 11,
-          id: 4
-        }
-      ]
-    },
-    {
-      name: 'Node.js',
-      id: 2,
-      parts: [
-        {
-          name: 'Routing',
-          exercises: 3,
-          id: 1
-        },
-        {
-          name: 'Middlewares',
-          exercises: 7,
-          id: 2
-        }
-      ]
+  const [persons, setPersons] = useState([
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
+  ])
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [isFiltered, setIsFiltered] = useState(false)
+  const [filterString, setFilterString] = useState('')
+
+  const handleAddPerson = (event) => {
+    event.preventDefault()
+
+    const isDuplicate = persons.filter((person) => {
+      return person.name === newName
+    }).length > 0
+
+    if (isDuplicate) {
+      alert(`${newName} is already in your Phone Book!`)
+      return -1
     }
-  ]
+
+    const isEmpty = newName.trim() === '' || newNumber.trim() === ''
+
+    console.log("isEmpty", isEmpty);
+
+    if (isEmpty) {
+      alert(`Name and number field must be filled in.`)
+      return -1
+    }
+
+
+    const contactObject = {
+      name: newName,
+      number: newNumber,
+      id: persons.length + 1
+    }
+
+    setPersons(persons.concat(contactObject))
+    setNewName('')
+    setNewNumber('')
+
+  }
+
+  const handleChangeName = (event) => {
+    console.log(event.target.value);
+    setNewName(event.target.value)
+  }
+
+  const handleChangeNumber = (event) => {
+    event.preventDefault()
+    setNewNumber(event.target.value)
+  }
+
+  const handleFilterName = (event) => {
+    setFilterString(event.target.value)
+
+    setIsFiltered(filterString.length > 0 ? true : false)
+  }
+
+  const personsToShow = isFiltered ?
+    persons.filter(person => person.name.toLowerCase().startsWith(filterString))
+    : persons
+
 
   return (
-    <>
-      {courses.map((course) => {
-        return (
-          <Course key={course.id} course={course} />
-        )
-      })}
-    </>
+    <div>
+      <h2>Phonebook</h2>
+
+      <Filter filterFunction={handleFilterName} />
+
+      <h3>Add a new Person</h3>
+
+      <PersonForm handleAddPerson={handleAddPerson} newName={newName} handleChangeName={handleChangeName} newNumber={newNumber} handleChangeNumber={handleChangeNumber} />
+
+      <h2>Numbers</h2>
+
+      <Persons persons={personsToShow} />
+
+    </div>
 
   )
 }
